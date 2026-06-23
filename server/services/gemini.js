@@ -1,6 +1,6 @@
 import { AppError } from '../utils/error.js';
 
-const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
+const DEFAULT_GEMINI_MODEL = 'gemini-2.0-flash';
 const GEMINI_API_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 function getGeminiApiKey() {
@@ -63,14 +63,25 @@ async function readErrorBody(response) {
   }
 }
 
-async function fetchWithRetry(url, fetchOptions, retries = 3, delay = 1200) {
+async function fetchWithRetry(url, fetchOptions, retries = 4, delay = 2000) {
+  let lastResponse;
+
   for (let i = 0; i < retries; i++) {
     try {
       const response = await fetch(url, fetchOptions);
 
-      if (response.status === 503 || response.status === 429) {
-        console.warn(`[Gemini API] Received status ${response.status}. Retrying in ${delay}ms... (Attempt ${i + 1}/${retries})`);
-        await new Promise((resolve) => setTimeout(resolve, delay));
+      if ((response.status === 503 || response.status === 429) && i < retries - 1) {
+        // Try to honour the Retry-After / retry delay from the API response
+        let waitMs = delay;
+        const retryAfterHeader = response.headers.get('retry-after') || response.headers.get('x-ratelimit-reset-after');
+        if (retryAfterHeader) {
+          const secs = parseFloat(retryAfterHeader);
+          if (Number.isFinite(secs) && secs > 0) waitMs = Math.ceil(secs * 1000) + 500;
+        }
+
+        console.warn(`[Gemini API] Received status ${response.status}. Retrying in ${waitMs}ms... (Attempt ${i + 1}/${retries})`);
+        lastResponse = response;
+        await new Promise((resolve) => setTimeout(resolve, waitMs));
         delay *= 2;
         continue;
       }
@@ -83,6 +94,12 @@ async function fetchWithRetry(url, fetchOptions, retries = 3, delay = 1200) {
       delay *= 2;
     }
   }
+
+  // All retries exhausted on rate-limit/service-unavailable
+  throw new AppError(
+    `Gemini API unavailable after ${retries} retries (last status: ${lastResponse?.status ?? 'unknown'}).`,
+    503,
+  );
 }
 
 export async function generateContent(prompt, options = {}) {

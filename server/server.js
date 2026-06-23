@@ -22,7 +22,10 @@ const server = http.createServer(async (req, res) => {
     const urlParts = url.pathname.split('/').filter(Boolean);
 
     if (urlParts.length === 0) {
-      throw createNotFoundError();
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.end(JSON.stringify({ ok: true, message: 'Investment Research Server is running' }));
+      return;
     }
 
     await routeRequest(req, res, urlParts);

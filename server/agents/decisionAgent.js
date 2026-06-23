@@ -128,8 +128,20 @@ export async function createInvestmentDecision(input = {}) {
     competition,
   });
 
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY;
+  if (!apiKey || apiKey === 'your_gemini_api_key_here') {
+    console.info(`[Decision Agent] Running in Mock/Demo mode.`);
+    const score = 78;
+    return {
+      score: score,
+      decision: 'INVEST',
+      reasoning: `Based on mock analysis, this entity demonstrates robust fundamentals, solid profit margins of 22%, and leading competitive advantage in R&D that outpace minor supply chain headwinds. (Mock results for display purposes).`,
+      scoreBreakdown: SCORE_WEIGHTS,
+    };
+  }
+
   const model = new ChatGoogleGenerativeAI({
-    apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY,
+    apiKey: apiKey,
     model: 'gemini-2.5-flash',
     temperature: 0.1,
   });

@@ -1,12 +1,27 @@
 export default function DecisionCard({ decision, reasoning }) {
   const isInvest = decision === 'INVEST';
-  const tone = isInvest ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-200' : 'border-amber-400/30 bg-amber-400/10 text-amber-200';
+  
+  const glassStyle = isInvest 
+    ? 'border-emerald-500/35 bg-emerald-950/20 text-emerald-100 shadow-[0_0_20px_rgba(16,185,129,0.15)]' 
+    : decision 
+      ? 'border-amber-500/35 bg-amber-950/20 text-amber-100 shadow-[0_0_20px_rgba(245,158,11,0.15)]' 
+      : 'text-slate-300';
+
+  const badgeStyle = isInvest 
+    ? 'bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent font-black' 
+    : decision 
+      ? 'bg-gradient-to-r from-amber-400 to-rose-400 bg-clip-text text-transparent font-black'
+      : 'text-slate-400 font-bold';
 
   return (
-    <div className={`rounded-3xl border p-5 shadow-glow backdrop-blur-xl ${tone}`}>
-      <p className="text-sm font-medium uppercase tracking-[0.3em] opacity-80">Decision</p>
-      <div className="mt-3 text-4xl font-black">{decision || 'Awaiting analysis'}</div>
-      <p className="mt-4 text-sm leading-6 text-white/80">{reasoning || 'The decision rationale will appear after analysis completes.'}</p>
+    <div className={`glass-panel rounded-3xl p-6 shadow-glow transition-all duration-300 ${glassStyle}`}>
+      <p className="text-[10px] font-bold uppercase tracking-[0.25em] opacity-85">Orchestrator Decision</p>
+      <div className={`mt-3 text-4xl tracking-tight ${badgeStyle}`}>
+        {decision || 'Awaiting Data'}
+      </div>
+      <p className="mt-4 text-xs leading-6 text-white/80">
+        {reasoning || 'The multi-agent consensus decision and synthesis notes will render here after the pipeline completes.'}
+      </p>
     </div>
   );
 }

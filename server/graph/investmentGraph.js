@@ -39,7 +39,7 @@ export async function runInvestmentGraph(input = {}) {
   }
 
   const graph = new StateGraph(InvestmentState)
-    .addNode('research', async (currentState) => {
+    .addNode('researchNode', async (currentState) => {
       logStep('research-agent', { company: currentState.company });
 
       try {
@@ -53,7 +53,7 @@ export async function runInvestmentGraph(input = {}) {
         throw error instanceof AppError ? error : new AppError('research-agent failed', 502, { cause: error.message });
       }
     })
-    .addNode('financial', async (currentState) => {
+    .addNode('financialNode', async (currentState) => {
       logStep('financial-agent', { company: currentState.company });
 
       try {
@@ -71,7 +71,7 @@ export async function runInvestmentGraph(input = {}) {
         throw error instanceof AppError ? error : new AppError('financial-agent failed', 502, { cause: error.message });
       }
     })
-    .addNode('news', async (currentState) => {
+    .addNode('newsNode', async (currentState) => {
       logStep('news-agent', { company: currentState.company });
 
       try {
@@ -85,7 +85,7 @@ export async function runInvestmentGraph(input = {}) {
         throw error instanceof AppError ? error : new AppError('news-agent failed', 502, { cause: error.message });
       }
     })
-    .addNode('competition', async (currentState) => {
+    .addNode('competitionNode', async (currentState) => {
       logStep('competition-agent', { company: currentState.company });
 
       try {
@@ -99,7 +99,7 @@ export async function runInvestmentGraph(input = {}) {
         throw error instanceof AppError ? error : new AppError('competition-agent failed', 502, { cause: error.message });
       }
     })
-    .addNode('decision', async (currentState) => {
+    .addNode('decisionNode', async (currentState) => {
       logStep('decision-agent', { company: currentState.company });
 
       try {
@@ -121,12 +121,12 @@ export async function runInvestmentGraph(input = {}) {
         throw error instanceof AppError ? error : new AppError('decision-agent failed', 502, { cause: error.message });
       }
     })
-    .addEdge(START, 'research')
-    .addEdge('research', 'financial')
-    .addEdge('financial', 'news')
-    .addEdge('news', 'competition')
-    .addEdge('competition', 'decision')
-    .addEdge('decision', END);
+    .addEdge(START, 'researchNode')
+    .addEdge('researchNode', 'financialNode')
+    .addEdge('financialNode', 'newsNode')
+    .addEdge('newsNode', 'competitionNode')
+    .addEdge('competitionNode', 'decisionNode')
+    .addEdge('decisionNode', END);
 
   const app = graph.compile();
   const decisionResult = await app.invoke(state);

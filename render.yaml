@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: investment-research-backend
+    env: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false

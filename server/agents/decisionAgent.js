@@ -133,7 +133,7 @@ export async function createInvestmentDecision(input = {}) {
   try {
     const model = new ChatGoogleGenerativeAI({
       apiKey: apiKey,
-      model: 'gemini-2.0-flash',
+      model: 'gemini-3.1-flash-lite',
       temperature: 0.1,
     });
 

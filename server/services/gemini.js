@@ -1,6 +1,6 @@
 import { AppError } from '../utils/error.js';
 
-const DEFAULT_GEMINI_MODEL = 'gemini-2.0-flash';
+const DEFAULT_GEMINI_MODEL = 'gemini-3.1-flash-lite';
 const GEMINI_API_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 
 function getGeminiApiKey() {

@@ -63,6 +63,28 @@ async function readErrorBody(response) {
   }
 }
 
+async function fetchWithRetry(url, fetchOptions, retries = 3, delay = 1200) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, fetchOptions);
+
+      if (response.status === 503 || response.status === 429) {
+        console.warn(`[Gemini API] Received status ${response.status}. Retrying in ${delay}ms... (Attempt ${i + 1}/${retries})`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        delay *= 2;
+        continue;
+      }
+
+      return response;
+    } catch (err) {
+      if (i === retries - 1) throw err;
+      console.warn(`[Gemini API] Network error: ${err.message}. Retrying in ${delay}ms...`);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      delay *= 2;
+    }
+  }
+}
+
 export async function generateContent(prompt, options = {}) {
   if (typeof prompt !== 'string' || !prompt.trim()) {
     throw new AppError('Prompt is required for Gemini generation.', 400);
@@ -74,7 +96,7 @@ export async function generateContent(prompt, options = {}) {
 
   console.info(`[Gemini Request] Model: ${model}, Prompt Length: ${prompt.length} chars`);
 
-  const response = await fetch(url, {
+  const response = await fetchWithRetry(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

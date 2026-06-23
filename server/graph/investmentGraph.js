@@ -57,18 +57,22 @@ export async function runInvestmentGraph(input = {}) {
   }
 
   // 2. Gemini verification check
-  const verificationPrompt = `Verify if the company "${state.company}" exists as a real, verifiable operating business entity with sufficient public market/financial info available based on these search snippets:
-${validationSearch.results.map(r => `Title: ${r.title}\nContent: ${r.content}`).join('\n\n')}
+  const verificationPrompt = `You are a strict data validation agent. 
+We need to verify if "${state.company}" is a real, active, operating corporate entity or brand with sufficient public financial and market information available.
 
-Strict Rule: Respond with ONLY "YES" if it is a real operating company with sufficient public information. Respond with ONLY "NO" if it is not a real company, has insufficient public information, or is a fake/random query. Do not add any punctuation or extra text.`;
+Here are the search results returned for the query "${state.company}":
+${validationSearch.results.map((r, i) => `--- Result ${i+1} ---\nTitle: ${r.title}\nContent: ${r.content}\n`).join('\n')}
+
+Criteria:
+1. The search results MUST explicitly mention and describe "${state.company}" (or a very clear, direct abbreviation/ticker of it, such as TSLA for Tesla).
+2. The search results must NOT be generic placeholder documents, sample Excel/PDF templates, unrelated companies (e.g. matching only a single letter or unrelated abbreviation like XYZ for Block Inc), or random text files.
+3. There must be actual business and financial content related to "${state.company}".
+
+Respond with ONLY "YES" if all criteria are met and it is a real, verifiable company.
+Respond with ONLY "NO" if the search results do not clearly identify and describe "${state.company}" as a real operating company, if it's a fake/gibberish name, or if there is insufficient information. Do not add any punctuation or extra explanation.`;
 
   let verificationResult;
-  try {
-    verificationResult = await generateContent(verificationPrompt, { temperature: 0.0 });
-  } catch (err) {
-    console.error(`[Validation Failed] Gemini verification error`, err);
-    throw new AppError('Company not found or insufficient market information available.', 400);
-  }
+  verificationResult = await generateContent(verificationPrompt, { temperature: 0.0 });
 
   const cleanVerify = verificationResult.trim().toUpperCase();
   console.info(`[Validation Result] Company: "${state.company}", Verifiable: ${cleanVerify}`);

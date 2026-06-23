@@ -1,7 +1,5 @@
 import { AppError } from '../utils/error.js';
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
-import { StructuredOutputParser } from '@langchain/core/output_parsers';
-import { z } from 'zod';
 
 const SCORE_WEIGHTS = Object.freeze({
   growthPotential: 25,
@@ -11,11 +9,7 @@ const SCORE_WEIGHTS = Object.freeze({
   riskAssessment: 15,
 });
 
-const decisionSchema = z.object({
-  score: z.number().min(0).max(100),
-  decision: z.enum(['INVEST', 'PASS', 'INSUFFICIENT_DATA', 'INVALID_COMPANY']),
-  reasoning: z.string().min(1),
-});
+
 
 function normalizeText(value) {
   if (typeof value !== 'string') {
@@ -136,30 +130,36 @@ export async function createInvestmentDecision(input = {}) {
 
   console.info(`[Decision Agent] Invoking ChatGoogleGenerativeAI for decision synthesis...`);
 
-  const model = new ChatGoogleGenerativeAI({
-    apiKey: apiKey,
-    model: 'gemini-2.5-flash',
-    temperature: 0.1,
-  });
+  try {
+    const model = new ChatGoogleGenerativeAI({
+      apiKey: apiKey,
+      model: 'gemini-2.5-flash',
+      temperature: 0.1,
+    });
 
-  const parser = StructuredOutputParser.fromZodSchema(decisionSchema);
-  const parserInstructions = parser.getFormatInstructions();
+    const response = await model.invoke(prompt);
+    const text = Array.isArray(response?.content)
+      ? response.content.map((part) => (typeof part?.text === 'string' ? part.text : '')).join('')
+      : typeof response?.content === 'string'
+        ? response.content
+        : '';
 
-  const response = await model.invoke(`${prompt}\n\n${parserInstructions}`);
-  const text = Array.isArray(response?.content)
-    ? response.content.map((part) => (typeof part?.text === 'string' ? part.text : '')).join('')
-    : typeof response?.content === 'string'
-      ? response.content
-      : '';
+    console.info(`[Decision Agent] Raw response length: ${text.length} chars`);
+    const result = parseDecisionPayload(text);
 
-  console.info(`[Decision Agent] Response: "${text}"`);
-  const result = parseDecisionPayload(text);
-
-  return {
-    score: result.score,
-    decision: result.decision,
-    reasoning: result.reasoning,
-    scoreBreakdown: SCORE_WEIGHTS,
-  };
+    return {
+      score: result.score,
+      decision: result.decision,
+      reasoning: result.reasoning,
+      scoreBreakdown: SCORE_WEIGHTS,
+    };
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    throw new AppError(
+      `Decision agent failed: ${err?.message || 'Unknown error'}`,
+      502,
+      { cause: err?.message },
+    );
+  }
 }
 

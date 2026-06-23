@@ -173,7 +173,19 @@ Respond with ONLY "NO" if the search results do not clearly identify and describ
     .addEdge('decisionNode', END);
 
   const app = graph.compile();
-  const decisionResult = await app.invoke(state);
+
+  let decisionResult;
+  try {
+    decisionResult = await app.invoke(state);
+  } catch (err) {
+    if (err instanceof AppError) throw err;
+    console.error('[investmentGraph] Graph invocation failed', err);
+    throw new AppError(
+      `Investment analysis failed: ${err?.message || 'Unknown graph error'}`,
+      502,
+      { cause: err?.message },
+    );
+  }
 
   logStep('workflow-complete', {
     company: decisionResult.company,

@@ -27,13 +27,23 @@ const server = http.createServer(async (req, res) => {
 
     await routeRequest(req, res, urlParts);
   } catch (error) {
-    console.error('[server error]', error);
-    const appError = error instanceof AppError ? error : new AppError('Internal server error', 500);
+    console.error('[server error]', error?.stack || error);
+    const appError = error instanceof AppError
+      ? error
+      : new AppError(error?.message || 'Internal server error', 500);
     res.statusCode = appError.statusCode;
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
+
+    let safeDetails;
+    try {
+      safeDetails = appError.details ? JSON.parse(JSON.stringify(appError.details)) : undefined;
+    } catch {
+      safeDetails = { raw: String(appError.details) };
+    }
+
     res.end(JSON.stringify({
       error: appError.message,
-      details: appError.details || undefined,
+      ...(safeDetails !== undefined && { details: safeDetails }),
     }));
   }
 });

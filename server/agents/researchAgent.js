@@ -101,6 +101,16 @@ function cleanSummary(value) {
   return value.trim().replace(/\n{3,}/g, '\n\n');
 }
 
+function buildStructuredFindings(summary, sources) {
+  const structuredText = cleanSummary(summary);
+  const sourceList = Array.isArray(sources) ? sources : [];
+
+  return {
+    summary: structuredText,
+    sources: sourceList,
+  };
+}
+
 async function gatherCompanyEvidence(companyName, options = {}) {
   const query = `${companyName} business model products services industry position growth opportunities`;
 
@@ -131,7 +141,7 @@ export async function createResearchSummary(companyName, options = {}) {
 
   return {
     company: normalizedCompanyName,
-    research: cleanSummary(summary),
+    research: buildStructuredFindings(summary, evidence.results).summary,
     sources: evidence.results,
     answer: evidence.answer,
   };

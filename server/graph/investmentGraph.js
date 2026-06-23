@@ -5,6 +5,23 @@ import { createNewsAnalysis } from '../agents/newsAgent.js';
 import { createCompetitionAnalysis } from '../agents/competitionAgent.js';
 import { createInvestmentDecision } from '../agents/decisionAgent.js';
 import { AppError } from '../utils/error.js';
+import { Annotation, END, START, StateGraph } from '@langchain/langgraph';
+
+const InvestmentState = Annotation.Root({
+  company: Annotation({ reducer: (_current, next) => next ?? '', default: () => '' }),
+  research: Annotation({ reducer: (_current, next) => next ?? '', default: () => '' }),
+  researchSources: Annotation({ reducer: (_current, next) => next ?? [], default: () => [] }),
+  financials: Annotation({ reducer: (_current, next) => next ?? '', default: () => '' }),
+  financialSources: Annotation({ reducer: (_current, next) => next ?? [], default: () => [] }),
+  news: Annotation({ reducer: (_current, next) => next ?? '', default: () => '' }),
+  newsSources: Annotation({ reducer: (_current, next) => next ?? [], default: () => [] }),
+  competition: Annotation({ reducer: (_current, next) => next ?? '', default: () => '' }),
+  competitionSources: Annotation({ reducer: (_current, next) => next ?? [], default: () => [] }),
+  score: Annotation({ reducer: (_current, next) => next ?? 0, default: () => 0 }),
+  decision: Annotation({ reducer: (_current, next) => next ?? '', default: () => '' }),
+  reasoning: Annotation({ reducer: (_current, next) => next ?? '', default: () => '' }),
+  scoreBreakdown: Annotation({ reducer: (_current, next) => next ?? {}, default: () => ({}) }),
+});
 
 function logStep(step, details) {
   console.info(`[investmentGraph] ${step}`, details);
@@ -14,19 +31,6 @@ function logError(step, error) {
   console.error(`[investmentGraph] ${step} failed`, error);
 }
 
-async function runNode(step, state, handler) {
-  logStep(step, { company: state.company });
-
-  try {
-    return await handler(state);
-  } catch (error) {
-    logError(step, error);
-    throw error instanceof AppError
-      ? error
-      : new AppError(`${step} failed`, 502, { cause: error.message });
-  }
-}
-
 export async function runInvestmentGraph(input = {}) {
   const state = createInvestmentState(input);
 
@@ -34,57 +38,98 @@ export async function runInvestmentGraph(input = {}) {
     throw new AppError('company is required to run the investment graph.', 400);
   }
 
-  const researchResult = await runNode('research-agent', state, async (currentState) => {
-    const result = await createResearchSummary(currentState.company);
-    return {
-      ...currentState,
-      research: result.research,
-      researchSources: result.sources,
-    };
-  });
+  const graph = new StateGraph(InvestmentState)
+    .addNode('research', async (currentState) => {
+      logStep('research-agent', { company: currentState.company });
 
-  const financialResult = await runNode('financial-agent', researchResult, async (currentState) => {
-    const result = await createFinancialAnalysis(currentState.company, {
-      researchSummary: currentState.research,
-      researchSources: currentState.researchSources || [],
-    });
-    return {
-      ...currentState,
-      financials: result.financials,
-    };
-  });
+      try {
+        const result = await createResearchSummary(currentState.company);
+        return {
+          research: result.research,
+          researchSources: result.sources,
+        };
+      } catch (error) {
+        logError('research-agent', error);
+        throw error instanceof AppError ? error : new AppError('research-agent failed', 502, { cause: error.message });
+      }
+    })
+    .addNode('financial', async (currentState) => {
+      logStep('financial-agent', { company: currentState.company });
 
-  const newsResult = await runNode('news-agent', financialResult, async (currentState) => {
-    const result = await createNewsAnalysis(currentState.company);
-    return {
-      ...currentState,
-      news: result.news,
-    };
-  });
+      try {
+        const result = await createFinancialAnalysis(currentState.company, {
+          researchSummary: currentState.research,
+          researchSources: currentState.researchSources || [],
+        });
 
-  const competitionResult = await runNode('competition-agent', newsResult, async (currentState) => {
-    const result = await createCompetitionAnalysis(currentState.company);
-    return {
-      ...currentState,
-      competition: result.competition,
-    };
-  });
+        return {
+          financials: result.financials,
+          financialSources: result.sources,
+        };
+      } catch (error) {
+        logError('financial-agent', error);
+        throw error instanceof AppError ? error : new AppError('financial-agent failed', 502, { cause: error.message });
+      }
+    })
+    .addNode('news', async (currentState) => {
+      logStep('news-agent', { company: currentState.company });
 
-  const decisionResult = await runNode('decision-agent', competitionResult, async (currentState) => {
-    const result = await createInvestmentDecision({
-      research: currentState.research,
-      financials: currentState.financials,
-      news: currentState.news,
-      competition: currentState.competition,
-    });
+      try {
+        const result = await createNewsAnalysis(currentState.company);
+        return {
+          news: result.news,
+          newsSources: result.sources,
+        };
+      } catch (error) {
+        logError('news-agent', error);
+        throw error instanceof AppError ? error : new AppError('news-agent failed', 502, { cause: error.message });
+      }
+    })
+    .addNode('competition', async (currentState) => {
+      logStep('competition-agent', { company: currentState.company });
 
-    return {
-      ...currentState,
-      score: result.score,
-      decision: result.decision,
-      reasoning: result.reasoning,
-    };
-  });
+      try {
+        const result = await createCompetitionAnalysis(currentState.company);
+        return {
+          competition: result.competition,
+          competitionSources: result.sources,
+        };
+      } catch (error) {
+        logError('competition-agent', error);
+        throw error instanceof AppError ? error : new AppError('competition-agent failed', 502, { cause: error.message });
+      }
+    })
+    .addNode('decision', async (currentState) => {
+      logStep('decision-agent', { company: currentState.company });
+
+      try {
+        const result = await createInvestmentDecision({
+          research: currentState.research,
+          financials: currentState.financials,
+          news: currentState.news,
+          competition: currentState.competition,
+        });
+
+        return {
+          score: result.score,
+          decision: result.decision,
+          reasoning: result.reasoning,
+          scoreBreakdown: result.scoreBreakdown,
+        };
+      } catch (error) {
+        logError('decision-agent', error);
+        throw error instanceof AppError ? error : new AppError('decision-agent failed', 502, { cause: error.message });
+      }
+    })
+    .addEdge(START, 'research')
+    .addEdge('research', 'financial')
+    .addEdge('financial', 'news')
+    .addEdge('news', 'competition')
+    .addEdge('competition', 'decision')
+    .addEdge('decision', END);
+
+  const app = graph.compile();
+  const decisionResult = await app.invoke(state);
 
   logStep('workflow-complete', {
     company: decisionResult.company,
@@ -101,6 +146,7 @@ export async function runInvestmentGraph(input = {}) {
     score: decisionResult.score,
     decision: decisionResult.decision,
     reasoning: decisionResult.reasoning,
+    scoreBreakdown: decisionResult.scoreBreakdown,
   };
 }
 

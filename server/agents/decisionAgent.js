@@ -1,5 +1,7 @@
-import { generateContent } from '../services/gemini.js';
 import { AppError } from '../utils/error.js';
+import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
+import { StructuredOutputParser } from '@langchain/core/output_parsers';
+import { z } from 'zod';
 
 const SCORE_WEIGHTS = Object.freeze({
   growthPotential: 25,
@@ -7,6 +9,12 @@ const SCORE_WEIGHTS = Object.freeze({
   competitiveAdvantage: 20,
   marketSentiment: 15,
   riskLevel: 15,
+});
+
+const decisionSchema = z.object({
+  score: z.number().min(0).max(100),
+  decision: z.enum(['INVEST', 'PASS']),
+  reasoning: z.string().min(1),
 });
 
 function normalizeText(value) {
@@ -73,6 +81,7 @@ research: ${input.research}
 financials: ${input.financials}
 news: ${input.news}
 competition: ${input.competition}
+score guidance: Use the evidence across all previous agents. Do not invent positive signals or penalize the company without supporting evidence.
 `;
 }
 
@@ -119,18 +128,27 @@ export async function createInvestmentDecision(input = {}) {
     competition,
   });
 
-  const response = await generateContent(prompt, {
+  const model = new ChatGoogleGenerativeAI({
+    apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY,
+    model: 'gemini-2.5-flash',
     temperature: 0.1,
-    topP: 0.9,
-    maxOutputTokens: 500,
   });
 
-  const result = parseDecisionPayload(response);
+  const parser = StructuredOutputParser.fromZodSchema(decisionSchema);
+  const parserInstructions = parser.getFormatInstructions();
+
+  const response = await model.invoke(`${prompt}\n\n${parserInstructions}`);
+  const text = Array.isArray(response?.content)
+    ? response.content.map((part) => (typeof part?.text === 'string' ? part.text : '')).join('')
+    : typeof response?.content === 'string'
+      ? response.content
+      : '';
+  const result = parseDecisionPayload(text);
 
   return {
     score: result.score,
     decision: result.decision,
     reasoning: result.reasoning,
-    weights: SCORE_WEIGHTS,
+    scoreBreakdown: SCORE_WEIGHTS,
   };
 }

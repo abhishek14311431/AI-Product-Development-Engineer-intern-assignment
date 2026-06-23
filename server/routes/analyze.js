@@ -29,5 +29,6 @@ export async function analyzeRoute(req, res) {
     score: result.score,
     decision: result.decision,
     reasoning: result.reasoning,
+    scoreBreakdown: result.scoreBreakdown,
   });
 }

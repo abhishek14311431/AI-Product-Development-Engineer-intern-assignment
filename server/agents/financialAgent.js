@@ -130,6 +130,16 @@ function cleanSummary(value) {
   return value.trim().replace(/\n{3,}/g, '\n\n');
 }
 
+function buildStructuredFindings(summary, sources) {
+  const structuredText = cleanSummary(summary);
+  const sourceList = Array.isArray(sources) ? sources : [];
+
+  return {
+    summary: structuredText,
+    sources: sourceList,
+  };
+}
+
 async function gatherFinancialEvidence(companyName, options = {}) {
   const query = `${companyName} revenue growth profitability cash flow debt financial stability annual report earnings`;
 
@@ -165,7 +175,7 @@ export async function createFinancialAnalysis(companyName, options = {}) {
 
   return {
     company: normalizedCompanyName,
-    financials: cleanSummary(summary),
+    financials: buildStructuredFindings(summary, evidence.results).summary,
     sources: evidence.results,
     answer: evidence.answer,
   };

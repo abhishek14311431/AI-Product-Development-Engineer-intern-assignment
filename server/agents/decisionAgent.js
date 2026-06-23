@@ -8,12 +8,12 @@ const SCORE_WEIGHTS = Object.freeze({
   financialHealth: 25,
   competitiveAdvantage: 20,
   marketSentiment: 15,
-  riskLevel: 15,
+  riskAssessment: 15,
 });
 
 const decisionSchema = z.object({
   score: z.number().min(0).max(100),
-  decision: z.enum(['INVEST', 'PASS']),
+  decision: z.enum(['INVEST', 'PASS', 'INSUFFICIENT_DATA', 'INVALID_COMPANY']),
   reasoning: z.string().min(1),
 });
 
@@ -56,7 +56,7 @@ function buildDecisionPrompt(input) {
 Evaluate the following inputs and return a strict JSON object with this shape:
 {
   "score": number,
-  "decision": "INVEST" | "PASS",
+  "decision": "INVEST" | "PASS" | "INSUFFICIENT_DATA" | "INVALID_COMPANY",
   "reasoning": string
 }
 
@@ -65,7 +65,7 @@ Scoring rubric:
 - Financial Health: 25
 - Competitive Advantage: 20
 - Market Sentiment: 15
-- Risk Level: 15
+- Risk Assessment: 15
 
 Rules:
 - Score must be out of 100.
@@ -73,6 +73,8 @@ Rules:
 - If score >= 70, decision must be INVEST.
 - If score < 70, decision must be PASS.
 - Use the rubric weights to guide the score.
+- If the inputs contain insufficient data to calculate a score or assess key components, return decision as "INSUFFICIENT_DATA" and score as 0.
+- If the inputs indicate that the company is invalid, fake, or not an active business entity, return decision as "INVALID_COMPANY" and score as 0.
 - Keep reasoning concise and tied to the evidence.
 - Return JSON only, no markdown, no commentary.
 
@@ -81,7 +83,6 @@ research: ${input.research}
 financials: ${input.financials}
 news: ${input.news}
 competition: ${input.competition}
-score guidance: Use the evidence across all previous agents. Do not invent positive signals or penalize the company without supporting evidence.
 `;
 }
 
@@ -95,7 +96,7 @@ function parseDecisionPayload(value) {
   try {
     const parsed = JSON.parse(jsonText);
     const score = clampScore(parsed.score);
-    const decision = score >= 70 ? 'INVEST' : 'PASS';
+    const decision = parsed.decision;
     const reasoning = normalizeText(parsed.reasoning);
 
     return {
@@ -130,15 +131,10 @@ export async function createInvestmentDecision(input = {}) {
 
   const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY;
   if (!apiKey || apiKey === 'your_gemini_api_key_here') {
-    console.info(`[Decision Agent] Running in Mock/Demo mode.`);
-    const score = 78;
-    return {
-      score: score,
-      decision: 'INVEST',
-      reasoning: `Based on mock analysis, this entity demonstrates robust fundamentals, solid profit margins of 22%, and leading competitive advantage in R&D that outpace minor supply chain headwinds. (Mock results for display purposes).`,
-      scoreBreakdown: SCORE_WEIGHTS,
-    };
+    throw new AppError('Missing Gemini API key. Set GEMINI_API_KEY in .env.', 500);
   }
+
+  console.info(`[Decision Agent] Invoking ChatGoogleGenerativeAI for decision synthesis...`);
 
   const model = new ChatGoogleGenerativeAI({
     apiKey: apiKey,
@@ -155,6 +151,8 @@ export async function createInvestmentDecision(input = {}) {
     : typeof response?.content === 'string'
       ? response.content
       : '';
+
+  console.info(`[Decision Agent] Response: "${text}"`);
   const result = parseDecisionPayload(text);
 
   return {
@@ -164,3 +162,4 @@ export async function createInvestmentDecision(input = {}) {
     scoreBreakdown: SCORE_WEIGHTS,
   };
 }
+

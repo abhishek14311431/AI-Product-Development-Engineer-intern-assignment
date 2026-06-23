@@ -6,6 +6,8 @@ import { createCompetitionAnalysis } from '../agents/competitionAgent.js';
 import { createInvestmentDecision } from '../agents/decisionAgent.js';
 import { AppError } from '../utils/error.js';
 import { Annotation, END, START, StateGraph } from '@langchain/langgraph';
+import { searchTavily } from '../services/tavily.js';
+import { generateContent } from '../services/gemini.js';
 
 const InvestmentState = Annotation.Root({
   company: Annotation({ reducer: (_current, next) => next ?? '', default: () => '' }),
@@ -37,6 +39,44 @@ export async function runInvestmentGraph(input = {}) {
   if (!state.company) {
     throw new AppError('company is required to run the investment graph.', 400);
   }
+
+  console.info(`[Validation] Validating company: "${state.company}"`);
+
+  // 1. Tavily Search Validation
+  let validationSearch;
+  try {
+    validationSearch = await searchTavily(`${state.company} company financials business overview products`, { maxResults: 3 });
+  } catch (err) {
+    console.error(`[Validation Failed] Tavily search error`, err);
+    throw new AppError('Company not found or insufficient market information available.', 400);
+  }
+
+  if (!validationSearch.results || validationSearch.results.length === 0) {
+    console.warn(`[Validation Failed] No search results for "${state.company}"`);
+    throw new AppError('Company not found or insufficient market information available.', 400);
+  }
+
+  // 2. Gemini verification check
+  const verificationPrompt = `Verify if the company "${state.company}" exists as a real, verifiable operating business entity with sufficient public market/financial info available based on these search snippets:
+${validationSearch.results.map(r => `Title: ${r.title}\nContent: ${r.content}`).join('\n\n')}
+
+Strict Rule: Respond with ONLY "YES" if it is a real operating company with sufficient public information. Respond with ONLY "NO" if it is not a real company, has insufficient public information, or is a fake/random query. Do not add any punctuation or extra text.`;
+
+  let verificationResult;
+  try {
+    verificationResult = await generateContent(verificationPrompt, { temperature: 0.0 });
+  } catch (err) {
+    console.error(`[Validation Failed] Gemini verification error`, err);
+    throw new AppError('Company not found or insufficient market information available.', 400);
+  }
+
+  const cleanVerify = verificationResult.trim().toUpperCase();
+  console.info(`[Validation Result] Company: "${state.company}", Verifiable: ${cleanVerify}`);
+
+  if (cleanVerify !== 'YES') {
+    throw new AppError('Company not found or insufficient market information available.', 400);
+  }
+
 
   const graph = new StateGraph(InvestmentState)
     .addNode('researchNode', async (currentState) => {

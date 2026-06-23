@@ -7,7 +7,7 @@ function getTavilyApiKey() {
   const apiKey = process.env.TAVILY_API_KEY;
 
   if (!apiKey || apiKey === 'your_tavily_api_key_here') {
-    return null;
+    throw new AppError('Missing Tavily API key. Set TAVILY_API_KEY in .env.', 500);
   }
 
   return apiKey;
@@ -47,37 +47,10 @@ export async function searchTavily(query, options = {}) {
   }
 
   const apiKey = getTavilyApiKey();
-  if (!apiKey) {
-    console.info(`[Tavily Service] Running in Mock/Demo mode for query: "${query}"`);
-    const company = query.split(' ')[0] || 'Company';
-    return {
-      query: query.trim(),
-      answer: `This is a mock search answer for "${query}".`,
-      results: [
-        {
-          title: `Market Report: ${company} Business Trends`,
-          url: `https://www.example.com/market-report-${company.toLowerCase()}`,
-          content: `This is simulated search content for ${company} covering its product offerings, software suites, and enterprise subscriptions.`,
-          score: 0.98,
-          publishedAt: new Date().toISOString(),
-        },
-        {
-          title: `Financial Health Analysis of ${company}`,
-          url: `https://www.example.com/financials-${company.toLowerCase()}`,
-          content: `Recent analyst reports indicate that ${company} is maintaining healthy margin lines, double-digit top-line growth, and a robust balance sheet position.`,
-          score: 0.94,
-          publishedAt: new Date().toISOString(),
-        },
-        {
-          title: `Latest News and Sentiment for ${company}`,
-          url: `https://www.example.com/news-${company.toLowerCase()}`,
-          content: `Public coverage of ${company} remains highly positive following key developer conferences and new product announcements.`,
-          score: 0.88,
-          publishedAt: new Date().toISOString(),
-        }
-      ],
-    };
-  }
+  const searchDepth = options.searchDepth || DEFAULT_TAVILY_SEARCH_DEPTH;
+  const maxResults = options.maxResults ?? 5;
+
+  console.info(`[Tavily Request] Query: "${query.trim()}", Depth: ${searchDepth}, Max Results: ${maxResults}`);
 
   const response = await fetch(TAVILY_API_URL, {
     method: 'POST',
@@ -87,8 +60,8 @@ export async function searchTavily(query, options = {}) {
     },
     body: JSON.stringify({
       query: query.trim(),
-      search_depth: options.searchDepth || DEFAULT_TAVILY_SEARCH_DEPTH,
-      max_results: options.maxResults ?? 5,
+      search_depth: searchDepth,
+      max_results: maxResults,
       include_answer: options.includeAnswer ?? false,
       include_raw_content: options.includeRawContent ?? false,
       topic: options.topic || 'general',
@@ -97,6 +70,7 @@ export async function searchTavily(query, options = {}) {
 
   if (!response.ok) {
     const errorBody = await readErrorBody(response);
+    console.error(`[Tavily Request Failed] Status: ${response.status}`, errorBody);
     throw new AppError('Tavily API request failed.', 502, {
       status: response.status,
       statusText: response.statusText,
@@ -106,11 +80,19 @@ export async function searchTavily(query, options = {}) {
 
   const payload = await response.json();
   const results = Array.isArray(payload?.results) ? payload.results : [];
+  const normalizedResults = results
+    .map(normalizeResult)
+    .filter((result) => result.title || result.url || result.content);
+
+  console.info(`[Tavily Response] Found ${normalizedResults.length} results.`);
+  normalizedResults.forEach((res, i) => {
+    console.info(`  Result ${i + 1}: Title: "${res.title}", URL: ${res.url}`);
+  });
 
   return {
     query: query.trim(),
     answer: typeof payload?.answer === 'string' ? payload.answer.trim() : '',
-    results: results.map(normalizeResult).filter((result) => result.title || result.url || result.content),
+    results: normalizedResults,
   };
 }
 

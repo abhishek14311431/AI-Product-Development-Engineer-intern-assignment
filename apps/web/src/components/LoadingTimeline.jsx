@@ -22,12 +22,12 @@ export default function LoadingTimeline({ active = false }) {
   return (
     <div className="glass-panel rounded-3xl p-6 shadow-glow transition-all duration-300">
       <div className="mb-5 flex items-center justify-between">
-        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-white">Multi-Agent Pipeline</h2>
+        <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-white">Research Pipeline</h2>
         <span className="flex items-center gap-2 text-xs font-semibold">
           {active ? (
             <>
               <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping"></span>
-              <span className="text-cyan-300 uppercase tracking-widest">Orchestrating...</span>
+              <span className="text-cyan-300 uppercase tracking-widest">Analyzing...</span>
             </>
           ) : (
             <span className="text-slate-500 uppercase tracking-widest">Idle / Ready</span>

@@ -30,5 +30,6 @@ export async function analyzeRoute(req, res) {
     decision: result.decision,
     reasoning: result.reasoning,
     scoreBreakdown: result.scoreBreakdown,
+    newsSources: result.newsSources || [],
   });
 }

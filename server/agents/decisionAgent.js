@@ -45,7 +45,7 @@ Evaluate the following inputs and return a strict JSON object with this shape:
     "riskAssessment": number        // Score out of 15 (higher is lower risk / safer profile)
   },
   "decision": "INVEST" | "PASS" | "INSUFFICIENT_DATA" | "INVALID_COMPANY",
-  "reasoning": string
+  "reasoning": string               // Exactly 3 to 4 clear bullet points (each starting with a dash, e.g. "- Point 1\\n- Point 2") explaining why to invest or pass
 }
 
 Scoring Rubric:
@@ -62,8 +62,8 @@ Rules:
 - Otherwise, score the five categories honestly based on the evidence. The total score will be the sum of these five categories.
 - If the total score >= 70, the decision must be "INVEST".
 - If the total score < 70, the decision must be "PASS".
-- Keep reasoning concise and directly tied to the evidence in the inputs.
-- Return ONLY the raw JSON block. No markdown, no formatting, no extra explanation text.
+- Keep reasoning concise, structured as exactly 3 to 4 clear bullet points (each starting with a dash, e.g. "- ...\n- ..."), explaining why to invest or pass.
+- Return ONLY the raw JSON block. No markdown wrapper outside the JSON, no extra explanation text.
 
 Inputs:
 research: ${input.research}

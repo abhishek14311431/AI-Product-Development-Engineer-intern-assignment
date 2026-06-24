@@ -203,6 +203,7 @@ Respond with ONLY "NO" if the search results do not clearly identify and describ
     decision: decisionResult.decision,
     reasoning: decisionResult.reasoning,
     scoreBreakdown: decisionResult.scoreBreakdown,
+    newsSources: decisionResult.newsSources,
   };
 }
 

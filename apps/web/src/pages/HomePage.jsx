@@ -37,7 +37,7 @@ export default function HomePage() {
               <div className="mx-auto w-full max-w-3xl text-center">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/20 bg-cyan-950/30 px-3.5 py-1 text-xs font-bold uppercase tracking-[0.2em] text-cyan-400">
                   <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                  AI Multi-Agent Orchestrator
+                  AI Research Agent
                 </span>
                 <h1 className="mt-6 text-5xl font-black tracking-tight text-white sm:text-7xl leading-[1.05] font-display">
                   Research Companies <br />
@@ -70,7 +70,7 @@ export default function HomePage() {
                   </div>
                   <div className="text-left">
                     <h1 className="text-lg font-bold text-white tracking-tight leading-none font-display">Invesfy AI</h1>
-                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mt-1">Multi-Agent Intelligence</p>
+                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mt-1">Research Intelligence</p>
                   </div>
                 </div>
 
@@ -97,26 +97,35 @@ export default function HomePage() {
                 <div className="glass-panel rounded-3xl p-12 text-center shadow-glow">
                   <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full border-2 border-cyan-500/30 border-t-cyan-400 animate-spin"></div>
                   <p className="mt-5 text-xs text-slate-400 font-medium">
-                    Orchestrating agents to research <strong className="text-cyan-400">{company}</strong>. Scanning web content, compiling financials, and analyzing competitor metrics...
+                    Analyzing metrics and conducting deep-dive research for <strong className="text-cyan-400">{company}</strong>. Scanning web content, compiling financials, and analyzing competitor metrics...
                   </p>
                 </div>
               ) : null}
 
               {data && !loading ? (
-                <section className="grid gap-5 lg:grid-cols-[1fr_320px]">
-                  <div className="grid gap-5">
-                    <ResearchSection
-                      research={data.research}
-                      financialAnalysis={data.financialAnalysis}
-                      newsAnalysis={data.newsAnalysis}
-                      competitionAnalysis={data.competitionAnalysis}
-                    />
-                  </div>
-                  <div className="grid gap-5 self-start lg:sticky lg:top-6">
-                    <ScoreCard score={data.score} breakdown={data.scoreBreakdown} />
-                    <DecisionCard decision={data.decision} reasoning={data.reasoning} />
-                  </div>
-                </section>
+                <div className="flex flex-col gap-6">
+                  {/* Top: Decision Hero Card */}
+                  <DecisionCard
+                    decision={data.decision}
+                    score={data.score}
+                    reasoning={data.reasoning}
+                  />
+
+                  {/* Middle: 3x2 Research Cards */}
+                  <ResearchSection
+                    research={data.research}
+                    financialAnalysis={data.financialAnalysis}
+                    newsAnalysis={data.newsAnalysis}
+                    competitionAnalysis={data.competitionAnalysis}
+                    newsSources={data.newsSources}
+                  />
+
+                  {/* Bottom: ScoreCard */}
+                  <ScoreCard
+                    score={data.score}
+                    breakdown={data.scoreBreakdown}
+                  />
+                </div>
               ) : null}
             </div>
           )}

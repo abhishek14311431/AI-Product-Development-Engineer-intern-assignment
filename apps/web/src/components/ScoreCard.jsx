@@ -17,38 +17,42 @@ export default function ScoreCard({ score, breakdown }) {
 
   return (
     <div className="glass-panel rounded-3xl p-6 shadow-glow transition-all duration-300 hover:border-cyan-500/20">
-      <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400">Investment Score</p>
-      <div className="mt-4 flex items-baseline gap-2">
-        <span className={`text-6xl font-black tracking-tight ${scoreStyle}`}>{displayScore}</span>
-        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">/ 100</span>
-      </div>
-
-      {hasBreakdown ? (
-        <div className="mt-6 flex flex-col gap-3.5 border-t border-slate-800/60 pt-5">
-          {categories.map((cat, idx) => {
-            const scoreVal = Number.isFinite(cat.val) ? cat.val : 0;
-            const pct = Math.round((scoreVal / cat.max) * 100);
-            return (
-              <div key={idx} className="flex flex-col gap-1.5">
-                <div className="flex justify-between text-[11px] font-bold tracking-wide">
-                  <span className="text-slate-400">{cat.label}</span>
-                  <span className="text-slate-200">{scoreVal} <span className="opacity-40">/ {cat.max}</span></span>
-                </div>
-                <div className="h-1.5 w-full rounded-full bg-slate-950/60 overflow-hidden">
-                  <div 
-                    className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500 transition-all duration-500"
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
+      <div className="flex flex-col md:flex-row md:items-center gap-6 justify-between">
+        <div className="min-w-[180px] text-center md:text-left">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400">Total Scorecard</p>
+          <div className="mt-3 flex items-baseline justify-center md:justify-start gap-2">
+            <span className={`text-6xl font-black tracking-tight ${scoreStyle}`}>{displayScore}</span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">/ 100</span>
+          </div>
         </div>
-      ) : (
-        <p className="mt-4 text-xs leading-5 text-slate-400">
-          Rubric scoring: Growth potential (25%), financials (25%), competition (20%), sentiment (15%), and risks (15%).
-        </p>
-      )}
+
+        {hasBreakdown ? (
+          <div className="flex-1 grid gap-x-8 gap-y-4 md:border-l md:border-slate-800/60 md:pl-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {categories.map((cat, idx) => {
+              const scoreVal = Number.isFinite(cat.val) ? cat.val : 0;
+              const pct = Math.round((scoreVal / cat.max) * 100);
+              return (
+                <div key={idx} className="flex flex-col gap-1.5">
+                  <div className="flex justify-between text-[11px] font-bold tracking-wide">
+                    <span className="text-slate-400">{cat.label}</span>
+                    <span className="text-slate-200">{scoreVal} <span className="opacity-40">/ {cat.max}</span></span>
+                  </div>
+                  <div className="h-1.5 w-full rounded-full bg-slate-950/60 overflow-hidden">
+                    <div 
+                      className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-500 transition-all duration-500"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-xs leading-5 text-slate-400 flex-1 md:border-l md:border-slate-800/60 md:pl-8">
+            Rubric scoring: Growth potential (25%), financials (25%), competition (20%), sentiment (15%), and risks (15%).
+          </p>
+        )}
+      </div>
     </div>
   );
 }

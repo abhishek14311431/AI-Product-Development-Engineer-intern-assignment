@@ -73,8 +73,8 @@ Return a concise structured summary with these sections exactly:
 - Business Model
 - Revenue Drivers
 - Industry Position
-- Growth Opportunities
-- Risks
+- Key Strengths
+- Key Weaknesses
 
 Guidelines:
 - Use only the supplied evidence and careful reasoning.

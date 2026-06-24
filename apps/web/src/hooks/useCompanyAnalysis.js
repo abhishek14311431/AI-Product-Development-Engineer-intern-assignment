@@ -5,8 +5,6 @@ export function useCompanyAnalysis() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [warmingUp, setWarmingUp] = useState(false);
-  const [warmupAttempt, setWarmupAttempt] = useState(0);
 
   async function submit(company) {
     const value = typeof company === 'string' ? company.trim() : '';
@@ -18,16 +16,9 @@ export function useCompanyAnalysis() {
 
     setLoading(true);
     setError('');
-    setWarmingUp(false);
-    setWarmupAttempt(0);
-
-    function handleWarmupRetry(attempt) {
-      setWarmingUp(true);
-      setWarmupAttempt(attempt);
-    }
 
     try {
-      const result = await analyzeCompany(value, { onWarmupRetry: handleWarmupRetry });
+      const result = await analyzeCompany(value);
       setData(result);
       return result;
     } catch (submissionError) {
@@ -36,8 +27,6 @@ export function useCompanyAnalysis() {
       return null;
     } finally {
       setLoading(false);
-      setWarmingUp(false);
-      setWarmupAttempt(0);
     }
   }
 
@@ -45,17 +34,7 @@ export function useCompanyAnalysis() {
     setData(null);
     setError('');
     setLoading(false);
-    setWarmingUp(false);
-    setWarmupAttempt(0);
   }
 
-  return {
-    data,
-    loading,
-    error,
-    warmingUp,
-    warmupAttempt,
-    submit,
-    reset,
-  };
+  return { data, loading, error, submit, reset };
 }

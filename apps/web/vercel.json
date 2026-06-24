@@ -1,8 +1,3 @@
 {
-  "rewrites": [
-    { "source": "/analyze", "destination": "https://investment-research-backend.onrender.com/analyze" },
-    { "source": "/health", "destination": "https://investment-research-backend.onrender.com/health" },
-    { "source": "/research", "destination": "https://investment-research-backend.onrender.com/research" },
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

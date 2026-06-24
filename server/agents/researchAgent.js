@@ -69,13 +69,12 @@ Use the evidence below to produce company-specific findings.
 Avoid generic statements like "the company operates in a competitive market" unless you tie them to the evidence.
 
 Return a concise structured summary with these sections exactly:
+- Company Overview
 - Business Model
 - Revenue Drivers
-- Products & Services
-- Market Position
-- Industry Trends
+- Industry Position
 - Growth Opportunities
-- Key Risks
+- Risks
 
 Guidelines:
 - Use only the supplied evidence and careful reasoning.

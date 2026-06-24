@@ -60,7 +60,7 @@ export default function HomePage() {
               />
             </div>
             <div className="grid gap-4 self-start lg:sticky lg:top-6">
-              <ScoreCard score={data.score} />
+              <ScoreCard score={data.score} breakdown={data.scoreBreakdown} />
               <DecisionCard decision={data.decision} reasoning={data.reasoning} />
             </div>
           </section>

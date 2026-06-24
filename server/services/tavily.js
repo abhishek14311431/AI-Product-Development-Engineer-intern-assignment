@@ -78,16 +78,27 @@ export async function searchTavily(query, options = {}) {
     });
   }
 
-  const payload = await response.json();
+  let payload;
+  try {
+    payload = await response.json();
+  } catch (parseErr) {
+    console.error('[Tavily Parsing Failed] Could not parse JSON response from Tavily API', parseErr);
+    throw new AppError('Failed to parse Tavily API response JSON.', 502, { cause: parseErr.message });
+  }
+
   const results = Array.isArray(payload?.results) ? payload.results : [];
   const normalizedResults = results
     .map(normalizeResult)
     .filter((result) => result.title || result.url || result.content);
 
-  console.info(`[Tavily Response] Found ${normalizedResults.length} results.`);
-  normalizedResults.forEach((res, i) => {
-    console.info(`  Result ${i + 1}: Title: "${res.title}", URL: ${res.url}`);
-  });
+  if (normalizedResults.length === 0) {
+    console.warn(`[Tavily Response Warning] No search results found or all results were empty/invalid for query: "${query.trim()}"`);
+  } else {
+    console.info(`[Tavily Response] Found ${normalizedResults.length} results.`);
+    normalizedResults.forEach((res, i) => {
+      console.info(`  Result ${i + 1}: Title: "${res.title}", URL: ${res.url}`);
+    });
+  }
 
   return {
     query: query.trim(),

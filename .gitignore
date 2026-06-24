@@ -1,8 +1,13 @@
 server/.env
 apps/web/.env
+apps/app/.env
 .env
 **/.env
 node_modules/
 dist/
 apps/web/dist/
+apps/app/dist/
 .DS_Store
+server/test-apis.js
+server/test-graph.js
+server/test-multiple.js

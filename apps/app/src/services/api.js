@@ -1,4 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+const API_BASE_URL = rawApiBaseUrl.endsWith('/') ? rawApiBaseUrl.slice(0, -1) : rawApiBaseUrl;
 
 async function parseJsonResponse(response) {
   const contentType = response.headers.get('content-type') || '';

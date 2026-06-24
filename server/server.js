@@ -45,6 +45,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     res.end(JSON.stringify({
+      success: false,
       error: appError.message,
       ...(safeDetails !== undefined && { details: safeDetails }),
     }));

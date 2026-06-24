@@ -111,7 +111,7 @@ export async function generateContent(prompt, options = {}) {
   const model = options.model || DEFAULT_GEMINI_MODEL;
   const url = `${GEMINI_API_BASE_URL}/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
 
-  console.info(`[Gemini Request] Model: ${model}, Prompt Length: ${prompt.length} chars`);
+  console.info(`[Gemini Request] Model: ${model}, Prompt Snippet: "${prompt.trim().slice(0, 200).replace(/\n/g, ' ')}..."`);
 
   const response = await fetchWithRetry(url, {
     method: 'POST',
@@ -147,13 +147,13 @@ export async function generateContent(prompt, options = {}) {
   const text = extractResponseText(payload);
 
   if (!text) {
-    console.error('[Gemini Response Failed] No text returned', payload);
+    console.error('[Gemini Response Failed] No text returned or silent failure occurred', payload);
     throw new AppError('Gemini response did not include text output.', 502, {
       payload,
     });
   }
 
-  console.info(`[Gemini Response] Output Length: ${text.length} chars`);
+  console.info(`[Gemini Response] Output Length: ${text.length} chars. Snippet: "${text.trim().slice(0, 200).replace(/\n/g, ' ')}..."`);
   return text;
 }
 

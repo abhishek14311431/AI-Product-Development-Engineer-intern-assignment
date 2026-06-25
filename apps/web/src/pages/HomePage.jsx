@@ -35,9 +35,17 @@ export default function HomePage() {
             /* Hero Centered State */
             <div className="flex min-h-[85vh] flex-col justify-center py-12">
               <div className="mx-auto w-full max-w-3xl text-center">
+                {/* Logo and App Title */}
+                <div className="flex items-center justify-center gap-3 mb-8">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-600 shadow-[0_4px_12px_rgba(6,182,212,0.3)]">
+                    <img src="/logo.svg" className="h-6.5 w-6.5" alt="Logo" />
+                  </div>
+                  <span className="text-xl font-bold text-white tracking-wider font-display uppercase">Invest with Technology</span>
+                </div>
+
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/20 bg-cyan-950/30 px-3.5 py-1 text-xs font-bold uppercase tracking-[0.2em] text-cyan-400">
                   <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                  AI Research Agent
+                  Compare and Invest
                 </span>
                 <h1 className="mt-6 text-5xl font-black tracking-tight text-white sm:text-7xl leading-[1.05] font-display">
                   Research Companies <br />
@@ -64,13 +72,11 @@ export default function HomePage() {
               <header className="glass-panel rounded-3xl p-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between shadow-glow transition-all duration-300">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-indigo-600 shadow-[0_4px_12px_rgba(6,182,212,0.3)]">
-                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
+                    <img src="/logo.svg" className="h-6 w-6" alt="Logo" />
                   </div>
                   <div className="text-left">
-                    <h1 className="text-lg font-bold text-white tracking-tight leading-none font-display">Invesfy AI</h1>
-                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mt-1">Research Intelligence</p>
+                    <h1 className="text-lg font-bold text-white tracking-tight leading-none font-display">Invest with Technology</h1>
+                    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mt-1">Compare and Invest</p>
                   </div>
                 </div>
 

@@ -5,15 +5,15 @@
   "rewrites": [
     {
       "source": "/analyze",
-      "destination": "https://investment-research-backend.onrender.com/analyze"
+      "destination": "https://ai-product-development-engineer-intern.onrender.com/analyze"
     },
     {
       "source": "/health",
-      "destination": "https://investment-research-backend.onrender.com/health"
+      "destination": "https://ai-product-development-engineer-intern.onrender.com/health"
     },
     {
       "source": "/research",
-      "destination": "https://investment-research-backend.onrender.com/research"
+      "destination": "https://ai-product-development-engineer-intern.onrender.com/research"
     },
     {
       "source": "/(.*)",

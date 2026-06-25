@@ -94,7 +94,6 @@ export default function HomePage() {
                     <div>
                       <p className="font-bold text-rose-400 text-sm">Analysis Failed</p>
                       <p className="mt-1 text-xs text-rose-200/80 leading-5">{error}</p>
-                      <p className="mt-2 text-[11px] text-slate-500">If the backend is waking up (Render free tier), please wait 30–60 seconds and try again.</p>
                     </div>
                   </div>
                 </div>

@@ -36,11 +36,8 @@ export async function analyzeCompany(company) {
         'Request timed out after 2 minutes. The backend server may be overloaded — please try again.'
       );
     }
-    // Network / CORS error — most likely a cold start CORS failure.
-    // Give the user actionable guidance.
     throw new Error(
-      'Could not reach the backend server. If this is the first request in a while, ' +
-      'the Render server may be waking up — please wait 30–60 seconds and try again.'
+      'Could not reach the backend server. Please check your connection and try again.'
     );
   } finally {
     clearTimeout(timer);

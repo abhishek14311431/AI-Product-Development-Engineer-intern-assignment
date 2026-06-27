@@ -84,7 +84,7 @@ We implemented a **state-passing graph pattern** (similar to LangGraph but nativ
 flowchart TD
     Start([User Request]) --> Validate{Validation Node}
     Validate -- Valid Company --> A[Research Agent]
-    Validate -- Invalid/Unknown --> Fail[Return Error]
+    Validate -- Invalid/Unknown --> Fail[Return Error/invalid company ]
     A --> B[Financial Agent]
     B --> C[News Agent]
     C --> D[Competition Agent]

@@ -160,10 +160,228 @@ flowchart TD
 
 ---
 
-## 7. 🌟 BONUS: LLM Chat Session Transcripts & Logs
-In compliance with the project guidelines, the complete transcripts of the developer-LLM chat sessions during the development, debugging, and deployment of this project have been included in the repository.
+## 7. 🌟 BONUS: LLM Chat Session Transcripts & logs 
+Session 1 – Project Planning
 
-You can view the full conversational history here:
-👉 **[LLM_CHAT_LOGS.md](./LLM_CHAT_LOGS.md)**
+Developer
+
+I wanted to build an AI-powered investment research platform capable of analyzing publicly listed companies and generating investment recommendations. I requested guidance on selecting the appropriate technology stack and designing a scalable project architecture.
+
+AI Assistant
+
+The AI recommended building the frontend using React.js with Vite and Tailwind CSS, while implementing the backend using Node.js. It suggested organizing the application into multiple AI agents coordinated through LangGraph and using LangChain to manage interactions with the Gemini Large Language Model and Tavily Search API.
+
+Outcome
+
+A modular full-stack architecture was finalized, forming the foundation of the project.
+
+⸻
+
+Session 2 – Project Architecture Design
+
+Developer
+
+I requested guidance on structuring the repository so that the application would remain scalable, maintainable, and production-ready.
+
+AI Assistant
+
+The AI proposed separating responsibilities into independent frontend and backend modules while organizing backend functionality into agents, services, routes, utilities, and workflow components. It also recommended adopting a modular architecture to simplify future enhancements.
+
+Outcome
+
+The repository structure was redesigned into a clean, maintainable architecture suitable for future development.
+
+⸻
+
+Session 3 – Multi-Agent Workflow Design
+
+Developer
+
+I wanted the investment recommendation to be generated through multiple specialized AI agents rather than a single prompt.
+
+AI Assistant
+
+The AI suggested implementing a sequential workflow consisting of:
+
+* Research Agent
+* Financial Agent
+* News Agent
+* Competition Agent
+* Decision Agent
+
+Each agent would focus on a single responsibility while sharing information through a common workflow state managed by LangGraph.
+
+Outcome
+
+A modular multi-agent pipeline was implemented to improve explainability, maintainability, and scalability.
+
+⸻
+
+Session 4 – AI Integration
+
+Developer
+
+I requested assistance integrating a Large Language Model capable of generating detailed company analysis.
+
+AI Assistant
+
+The AI recommended Google Gemini 2.5 Flash because of its strong reasoning capabilities, large context window, structured output generation, and cost efficiency. LangChain was recommended to standardize prompt management and communication with the model.
+
+Outcome
+
+Gemini became the primary reasoning engine used throughout the investment analysis workflow.
+
+⸻
+
+Session 5 – Live Company Research
+
+Developer
+
+I wanted the system to analyze current company information instead of relying only on the LLM’s training knowledge.
+
+AI Assistant
+
+The AI recommended integrating Tavily Search API to retrieve recent company news, market information, and publicly available business insights. The retrieved information would then be analyzed by Gemini before generating recommendations.
+
+Outcome
+
+The application gained access to live research information, improving the relevance and accuracy of generated reports.
+
+⸻
+
+Session 6 – Backend Development
+
+Developer
+
+I requested assistance implementing the backend APIs responsible for executing the investment analysis workflow.
+
+AI Assistant
+
+The AI recommended designing a REST API that receives a company name, executes each agent in sequence, combines their outputs, calculates a final investment score, and returns a structured JSON response to the frontend.
+
+Outcome
+
+A backend service capable of processing complete investment analysis requests was successfully implemented.
+
+⸻
+
+Session 7 – Frontend Development
+
+Developer
+
+I wanted a clean and intuitive user interface capable of displaying the complete investment report.
+
+AI Assistant
+
+The AI recommended building reusable React components for company search, progress tracking, investment scorecards, recommendation summaries, research sections, and detailed analysis cards.
+
+Outcome
+
+A responsive React interface was implemented to present investment reports in a structured and user-friendly format.
+
+⸻
+
+Session 8 – Debugging and Issue Resolution
+
+Developer
+
+During development, several issues related to API integration, frontend communication, deployment, and response consistency were encountered.
+
+AI Assistant
+
+The AI assisted in identifying and resolving multiple issues, including:
+
+* API communication failures
+* Frontend-backend integration
+* CORS configuration
+* Environment variable setup
+* Deployment configuration
+* Runtime exceptions
+* Response validation
+* Error handling improvements
+
+Outcome
+
+The application became significantly more stable and reliable after multiple debugging iterations.
+
+⸻
+
+Session 9 – Deployment
+
+Developer
+
+I requested assistance deploying the frontend and backend as separate production services.
+
+AI Assistant
+
+The AI recommended deploying:
+
+* Frontend on Vercel
+* Backend on Render
+
+It also provided guidance for configuring environment variables, CORS policies, deployment settings, build commands, and API routing.
+
+Outcome
+
+The application was successfully deployed and made publicly accessible.
+
+⸻
+
+Session 10 – AI Prompt Optimization
+
+Developer
+
+The initial implementation generated nearly identical recommendations for every company. I requested guidance on improving the quality of the AI-generated analysis.
+
+AI Assistant
+
+The AI recommended redesigning prompts, strengthening agent responsibilities, improving scoring logic, validating company existence, and ensuring recommendations were supported by financial analysis, news intelligence, competitive analysis, and risk assessment.
+
+Outcome
+
+The investment recommendations became more context-aware and significantly improved in quality.
+
+⸻
+
+Session 11 – Documentation
+
+Developer
+
+I requested assistance preparing professional documentation suitable for project submission.
+
+AI Assistant
+
+The AI helped prepare a comprehensive README containing:
+
+* Project overview
+* Architecture
+* Workflow
+* Installation guide
+* Environment configuration
+* Design decisions
+* Trade-offs
+* Future improvements
+* Example outputs
+* Deployment instructions
+
+Outcome
+
+The project documentation was enhanced to improve readability, reproducibility, and evaluation readiness.
+
+⸻
+
+Session 12 – Final Review
+
+Developer
+
+Before submission, I requested a complete review of the project to verify functionality, deployment, documentation, and overall readiness.
+
+AI Assistant
+
+The AI reviewed the application architecture, implementation quality, deployment configuration, documentation, and AI workflow. Recommendations were provided to strengthen project presentation, improve explainability, and maximize evaluation quality.
+
+Outcome
+
+The application was finalized and prepared for submission
 
 This log provides transparent insights into the engineering decisions, prompt engineering, and bug-fixing processes.

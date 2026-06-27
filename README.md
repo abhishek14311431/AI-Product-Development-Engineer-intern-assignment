@@ -84,7 +84,7 @@ We implemented a **state-passing graph pattern** (similar to LangGraph but nativ
 flowchart TD
     Start([User Request]) --> Validate{Validation Node}
     Validate -- Valid Company --> A[Research Agent]
-    Validate -- Invalid/Unknown --> Fail[Return Error/invalid company ]
+    Validate -- Invalid/Unknown --> Fail[Returned invalid company]
     A --> B[Financial Agent]
     B --> C[News Agent]
     C --> D[Competition Agent]
@@ -119,7 +119,7 @@ flowchart TD
 
 ## 5. Example Runs
 
-### Example 1: [COMPANY NAME : MRf]
+### Example 1: [COMPANY NAME : MRF]
 - **Decision**: PASS
 - **Score**: 65
 - **Key Decision Factors**:
@@ -204,7 +204,7 @@ Industry Position
 Jio is a market leader in the Indian telecom sector, having achieved this status by disrupting the industry with aggressive pricing and innovative service rollouts. It currently positions itself as the primary digital gateway for the Indian market, transitioning from a pure-play telecom provider to a diversified digital platform.
   
 
-### Example 3: FakeCompanyXYZ (Validation Test)[SEARCHED JAMUN COMOANY WHICH DOESNT EXIST]
+### Example 3: FakeCompanyXYZ (Validation Test)[SEARCHED JAMUN COMPANY WHICH DOESNT EXIST]
 - **Result**: Company not found or insufficient market information available.
 
 ---

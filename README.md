@@ -121,7 +121,19 @@ flowchart TD
 
 ### Example 1: [COMPANY NAME : MRF]
 - **Decision**: PASS
-- **Score**: 65
+- **Score**: 69
+/ 100
+Growth Potential
+16 / 25
+Financial Health
+18 / 25
+Competitive Advantage
+16 / 20
+Market Sentiment
+7 / 15
+Risk Assessment
+12 / 15
+
 - **Key Decision Factors**:
 While MRF maintains a dominant market position and strong brand equity, the company faces significant earnings volatility and margin pressure, evidenced by a recent decline in EPS despite top-line growth.
 The business model is highly sensitive to cyclical automotive demand and raw material cost fluctuations, which limits long-term predictability.
@@ -223,7 +235,7 @@ Session 1 – Project Planning
 
 Developer
 
-I wanted to build an AI-powered investment research platform capable of analyzing publicly listed companies and generating investment recommendations. I requested guidance on selecting the appropriate technology stack and designing a scalable project architecture.
+I wanted to build an AI-powered investment research platform capable of analyzing publicly listed companies and generating investment recommendations. I requested guidance on selecting the appropriate technology stack and designing a scalable project architecture.i am proving the pdf and tech stack i am comfortable in doing is React,Node.js
 
 AI Assistant
 

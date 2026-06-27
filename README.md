@@ -75,10 +75,10 @@ Follow these steps to configure and run the application locally.
 
 ---
 
-## 3. How It Works — Our Approach and Architecture
+## ## 3. How It Works — Our Approach and Architecture
 
 ### Multi-Agent Orchestration
-We implemented a **state-passing graph pattern** (similar to LangGraph but natively in Node.js) to orchestrate the research workflow. Instead of a single LLM trying to do everything in one massive prompt, we isolate responsibilities:
+We implemented the workflow using **LangGraph.js** (`@langchain/langgraph`), defining a typed shared state via `Annotation.Root` and orchestrating five specialized nodes through a compiled `StateGraph`. Instead of a single LLM trying to do everything in one massive prompt, we isolate responsibilities into independent agent nodes connected by explicit edges:
 
 ```mermaid
 flowchart TD
@@ -92,15 +92,15 @@ flowchart TD
     E --> End([Report & Recommendation])
 ```
 
-1. **State Management**: A shared state object (`investmentState.js`) is passed sequentially from agent to agent. Each agent appends its findings to this shared state.
-2. **Deterministic Decision Making**: The `Decision Agent` receives the compiled facts from all agents. It scores the company across categories (e.g., Financial Health, Competitive Edge, Sentiment) and checks if the total score exceeds the `INVEST` threshold. This makes the system auditable and consistent.
+1. **Pre-Graph Validation**: Before the graph runs, a two-stage check confirms the company is real: a Tavily search for basic existence, followed by a strict Gemini verification prompt that rejects fake, gibberish, or insufficiently documented entities. This prevents the agents from hallucinating financial data for non-existent companies (e.g. `FakeCompanyXYZ`) and saves unnecessary API costs.
+2. **State Management**: A typed state object (`investmentState.js`, defined via LangGraph's `Annotation.Root`) is passed through the graph via `addNode`/`addEdge`. Each node receives the current state, performs its research, and returns only the fields it updates — LangGraph merges these into the shared state using per-field reducers.
+3. **Deterministic Decision Making**: The `Decision Agent` node receives the compiled facts from all prior nodes. It scores the company across categories (e.g., Growth Potential, Financial Health, Competitive Advantage, Market Sentiment, Risk Assessment) and checks if the total score exceeds the `INVEST` threshold. This makes the system auditable and consistent.
+4. **Error Handling**: Each node is wrapped in structured error handling (`AppError` with HTTP status codes) and logged via per-step `logStep`/`logError` calls, so failures in any single agent are traceable and surfaced clearly rather than silently corrupting the pipeline.
 
 ### Component Architecture
 - **Frontend (`apps/web`)**: A single-page dashboard built with React and Tailwind CSS. It communicates with the backend via REST API, managing loading states dynamically.
-- **Backend (`server/`)**: A native Node.js HTTP server. Routes are modularized under `/routes`. We avoided complex frameworks (like Express) to minimize external dependencies and memory footprints.
+- **Backend (`server/`)**: A native Node.js HTTP server. Routes are modularized under `/routes`. We avoided complex frameworks (like Express) to minimize external dependencies and memory footprints, while using LangGraph.js for AI orchestration specifically.
 - **Services (`server/services/`)**: High-level wrapper clients around Gemini (via `@google/generative-ai`) and Tavily Search API.
-
----
 
 ## 4. Key Decisions & Trade-Offs
 

@@ -119,35 +119,93 @@ flowchart TD
 
 ## 5. Example Runs
 
-> [!NOTE]
-> *This section is intentionally left open for you to insert your specific example runs. Please paste your custom company outputs (like Score, Decision, and Reasoning) below.*
+### Example 1: [COMPANY NAME : MRf]
+- **Decision**: PASS
+- **Score**: 65
+- **Key Decision Factors**:
+While MRF maintains a dominant market position and strong brand equity, the company faces significant earnings volatility and margin pressure, evidenced by a recent decline in EPS despite top-line growth.
+The business model is highly sensitive to cyclical automotive demand and raw material cost fluctuations, which limits long-term predictability.
+Growth velocity remains a concern, as the company has historically struggled with modest sales expansion, and there is a lack of clear evidence regarding R&D investment to drive future innovation.
+The absence of positive market sentiment or catalysts, combined with intense competition from both domestic and global players, makes the current risk-reward profile unattractive for an investment.
+- **Key Financial Highlight**: Revenue Growth
+MRF has transitioned from a period of modest long-term growth (historical 3% CAGR) to a more aggressive expansion phase. Revenue from operations reached ₹28,153 crore in FY2025, representing a 12% year-over-year increase from ₹25,169 crore in FY2024. This acceleration suggests improved market penetration or pricing power within its core tyre segments.
 
-### Example 1: [Insert Company Name here, e.g., NVIDIA]
-- **Decision**: `[INVEST or PASS]`
-- **Score**: `[Score, e.g., 88/100]`
-- **Key Financial Highlight**: `[Detail]`
-- **Key Risk**: `[Detail]`
-- **Reasoning Summary**:
-  ```text
-  [Paste LLM reasoning output here]
-  ```
+Profitability
+The company maintains a consistent profitability profile, though it faces bottom-line volatility. FY2025 EPS stood at ₹4,407, a decline from ₹4,907 in FY2024, despite the top-line growth. Net profit margins have fluctuated in recent periods (ranging between 3.4% and 8.3% in recent years), reflecting the impact of input cost volatility and competitive pricing pressures inherent in the tyre manufacturing sector.
 
-### Example 2: [Insert Company Name here, e.g., Tesla]
-- **Decision**: `[INVEST or PASS]`
-- **Score**: `[Score, e.g., 72/100]`
-- **Key Financial Highlight**: `[Detail]`
-- **Key Risk**: `[Detail]`
-- **Reasoning Summary**:
-  ```text
-  [Paste LLM reasoning output here]
-  ```
+Debt Position
+MRF exhibits a conservative capital structure. Financial assessments consistently highlight the company’s ability to meet its debt obligations, supported by a robust balance sheet. While specific leverage ratios are not detailed in the provided evidence, the company’s long-term credit ratings (e.g., CARE Ratings) continue to draw comfort from its strong business risk profile and operational stability.
+- **Key Risk AND WEEKNESS**: Growth Velocity: Sales growth has been consistent but modest (3% CAGR over 14 years), suggesting limited top-line acceleration.
+Market Concentration: As a B2B-focused entity, the company is heavily reliant on the cyclical nature of the automobile industry and the success of its OEM tie-ups.
+Evidence Limitation: Publicly available strategic documentation is largely focused on general SWOT frameworks; specific internal operational vulnerabilities or recent R&D expenditure data are not detailed in the provided evidence.
+- **Reasoning Summary**:Company Overview
+MRF Limited (Madras Rubber Factory) is a prominent player in the domestic tyre industry. The company maintains a robust business risk profile supported by a long operational track record and a strong brand image. Note: While "MRF" is also a common industry acronym for "Materials Recovery Facility" (a sector projected to grow at a 5.49% CAGR through 2035), the evidence confirms this profile refers specifically to the tyre manufacturer.
 
-### Example 3: FakeCompanyXYZ (Validation Test)
-- **Result**: `Company not found or insufficient market information available.`
-- **Reasoning Summary**:
-  ```text
-  [The pre-analysis validation node successfully intercepted the run, identified the company as non-verifiable, and halted execution to prevent hallucinated data generation and API waste.]
-  ```
+Business Model
+MRF operates primarily as a B2B entity, focusing on the manufacturing and supply of tyres. Its business model is anchored by:
+
+Segment Diversification: Presence across all user segments within the tyre industry.
+Distribution Strategy: A strong, established distribution network that facilitates a significant presence in the replacement market.
+Strategic Partnerships: A focus on securing tie-ups with automobile manufacturers to sustain its B2B market position.
+Revenue Drivers
+Replacement Market: A primary revenue pillar supported by the company's extensive distribution infrastructure.
+Automotive Industry Growth: Revenue is tied to the expansion of the automobile industry and emerging market demand.
+Sales Consistency: The company has demonstrated a steady, albeit modest, sales growth rate of 3% over the long term (March 2010 to June 2024).
+Industry Position
+MRF holds a market leadership position in the domestic Indian tyre industry. Its competitive standing is reinforced by its ability to cater to all user segments and its high brand recall, which has been formally recognized in credit rating assessments (e.g., CARE Ratings).
+  
+
+### Example 2: [ Company Name: JIO]
+- **Decision**:INVEST
+- **Score**: Total Scorecard
+
+78
+/ 100
+Growth Potential
+22 / 25
+Financial Health
+16 / 25
+Competitive Advantage
+18 / 20
+Market Sentiment
+13 / 15
+Risk Assessment
+9 / 15
+
+- **Key Financial Highlight**: Revenue Growth
+
+Jio demonstrates aggressive top-line expansion, with Jio Financial Services (JFSL) reporting a 44% increase in total income (Q2 FY26) and a historical revenue CAGR of approximately 35%. Growth is driven by a dual-engine strategy: high-volume connectivity services in the telecom segment and rapid scaling of digital-first financial verticals, including lending, insurance, and asset management.
+
+Profitability
+
+The margin profile is bifurcated. JFSL exhibits high net margins (57.8%), reflecting a lean, digital-first operational model. Conversely, the core telecom business has historically prioritized market share over immediate profitability, utilizing low-margin entry strategies. While JFSL’s net income from operations saw a fivefold increase in Q2 FY26, overall profitability remains "subdued" as the company prioritizes infrastructure scaling and customer acquisition over short-term margin expansion.
+
+Debt Position
+
+Jio carries a significant debt burden stemming from massive capital expenditure in fiber, tower infrastructure, and 5G deployment. Management is actively pursuing deleveraging strategies, including the utilization of IPO proceeds to reduce debt by approximately $3 billion. The capital structure is currently transitioning from a high-leverage growth phase to a more sustainable balance sheet profile.
+- **Key Risk AND WEEKNESS**: 
+Financial Leverage: The company has historically carried significant debt, necessitating deleveraging strategies such as IPO proceeds to fund future growth.
+Margin Pressure: The company’s history of using "free services" to gain market share has previously created financial pressure, indicating a reliance on high-volume, low-margin entry strategies that may impact short-term profitability.
+- **Reasoning Summary**:Company Overview
+
+Jio is a dominant Indian telecommunications and digital services provider. It operates through two primary pillars: Reliance Jio Infocomm, which focuses on mobile/network connectivity and enterprise solutions (JioBusiness), and Jio Financial Services, a separate entity aiming to be a full-stack, digital-first financial provider.
+
+Business Model
+
+Jio utilizes a "data-first" model underpinned by massive infrastructure investments in fiber and towers. The company leverages its connectivity base to act as a gateway for broader digital ecosystems, including fintech, e-commerce, and enterprise IoT services. Its B2B arm, JioBusiness, provides a comprehensive suite of digital solutions ranging from cloud and security to managed Wi-Fi and IoT-based monitoring.
+
+Revenue Drivers
+
+Connectivity Services: Core revenue from individual mobile and fixed-line broadband subscriptions.
+Enterprise Solutions: Revenue generated through the JioBusiness division, offering services like Internet Leased Lines, JioCX Voice, and specialized IoT solutions (e.g., Smart Fleet and Energy Management).
+Strategic Expansion: Future growth is tied to 5G network expansion and the scaling of digital-first financial services.
+Industry Position
+
+Jio is a market leader in the Indian telecom sector, having achieved this status by disrupting the industry with aggressive pricing and innovative service rollouts. It currently positions itself as the primary digital gateway for the Indian market, transitioning from a pure-play telecom provider to a diversified digital platform.
+  
+
+### Example 3: FakeCompanyXYZ (Validation Test)[SEARCHED JAMUN COMOANY WHICH DOESNT EXIST]
+- **Result**: Company not found or insufficient market information available.
 
 ---
 

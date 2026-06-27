@@ -1,6 +1,6 @@
 # AI Investment Research Agent
 
-An end-to-end AI agent system that conducts comprehensive research on public companies. It analyzes financial strength, recent news sentiment, and the competitive landscape to output a deterministic investment score and a clear recommendation: `INVEST` or `PASS`.
+An end-to-end AI agent system that conducts comprehensive research on public companies. It analyzes financial strength, recent news sentiment, and the competitive landscape to output a deterministic investment score and a clear recommendation: `INVEST` or `PASS`. The complete project link https://ai-product-development-engineer-int.vercel.app/
 
 This system is built with a **React + Tailwind CSS** frontend, a native **Node.js HTTP backend** (no bloated frameworks), modular agent services, and a custom state-based orchestration layer.
 

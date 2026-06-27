@@ -89,7 +89,7 @@ flowchart TD
     B --> C[News Agent]
     C --> D[Competition Agent]
     D --> E[Decision Agent]
-    E --> End([Render PDF Report & Recommendation])
+    E --> End([Report & Recommendation])
 ```
 
 1. **State Management**: A shared state object (`investmentState.js`) is passed sequentially from agent to agent. Each agent appends its findings to this shared state.
